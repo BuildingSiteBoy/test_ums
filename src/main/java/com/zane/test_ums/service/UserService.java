@@ -21,6 +21,13 @@ public interface UserService extends IService<User> {
     int register(User user);
 
     /**
+     * 通过邮箱获取用户信息
+     * @param email 邮箱
+     * @return 用户
+     */
+    User getUserByEmail(String email);
+
+    /**
      * 通过用户名获取密码
      * @param username：用户名
      * @return password

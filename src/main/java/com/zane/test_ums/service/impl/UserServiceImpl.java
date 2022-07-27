@@ -1,10 +1,11 @@
 package com.zane.test_ums.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zane.test_ums.entity.AlterDto;
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public int register(User user) {
         return 0;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userMapper.selectOne(
+                new QueryWrapper<User>().eq("email", email)
+        );
     }
 
     @Override
