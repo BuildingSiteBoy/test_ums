@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author Zanezeng
- * @since 2022-07-21
+ * @since 2022-07-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -23,7 +23,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * uuid，唯一值
+     * userId, 唯一值
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
@@ -34,7 +34,7 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * 密码
+     * 密码,6～20位，允许字符范围为 ASCII 表编号33到126的字符
      */
     private String password;
 
@@ -47,11 +47,6 @@ public class User implements Serializable {
      * 家庭住址
      */
     private String address;
-
-    /**
-     * 盐值
-     */
-    private String salt;
 
     /**
      * 创建时间

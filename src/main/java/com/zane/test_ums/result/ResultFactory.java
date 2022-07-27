@@ -11,7 +11,7 @@ public class ResultFactory {
      * @param data 传递的对象
      * @return code + msg + data
      */
-    public Result buildResult(int resultCode, String msg, Object data) {
+    public static Result buildResult(int resultCode, String msg, Object data) {
         return new Result(resultCode, msg, data);
     }
 
@@ -22,19 +22,19 @@ public class ResultFactory {
      * @param data 传递的对象
      * @return code + msg + data
      */
-    public Result buildResult(ResultCode resultCode, String msg, Object data) {
+    public static Result buildResult(ResultCode resultCode, String msg, Object data) {
         return new Result(resultCode.code, msg, data);
     }
 
-    public Result buildSuccessResult(Object data) {
+    public static Result buildSuccessResult(Object data) {
         return buildResult(ResultCode.SUCCESS, "请求成功", data);
     }
 
-    public Result buildProcessedResult(Object data) {
+    public static Result buildProcessedResult(Object data) {
         return buildResult(ResultCode.PROCESSED_SUCCESS, "success", data);
     }
 
-    public Result buildFailResult(String msg) {
+    public static Result buildFailResult(String msg) {
         return buildResult(ResultCode.BAD_REQUEST, msg, null);
     }
 }

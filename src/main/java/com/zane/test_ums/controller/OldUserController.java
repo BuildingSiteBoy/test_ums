@@ -2,6 +2,7 @@ package com.zane.test_ums.controller;
 
 
 import com.zane.test_ums.result.Result;
+import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/user")
-public class UserrrController {
+public class OldUserController {
     @Autowired
     UserService userService;
 
     @PostMapping("/getUserInfo")
     public Result getUserInfo() {
-        return null;
+
+        // 根据用户凭证获取id
+        int id = 0;
+//        return ResultFactory.buildSuccessResult(userService.getById())
+        return ResultFactory.buildSuccessResult(userService.getById(id));
     }
 
     @PostMapping("/updateUserInfo")
@@ -34,6 +39,7 @@ public class UserrrController {
 
     @PostMapping("/updatePassword")
     public Result updatePassword() {
+//        userService.
         return null;
     }
 }

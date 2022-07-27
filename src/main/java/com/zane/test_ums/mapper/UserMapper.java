@@ -2,6 +2,7 @@ package com.zane.test_ums.mapper;
 
 import com.zane.test_ums.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -9,8 +10,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Zanezeng
- * @since 2022-07-21
+ * @since 2022-07-26
  */
+@Repository
 public interface UserMapper extends BaseMapper<User> {
 
 }
