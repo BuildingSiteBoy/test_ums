@@ -1,7 +1,10 @@
 package com.zane.test_ums.controller;
 
+import com.zane.test_ums.dto.LoginDto;
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.result.Result;
+import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,18 +27,31 @@ public class AccountController {
     UserService userService;
 
     @PostMapping("/register")
-    public Result register() {
-        return null;
+    public Result register(@RequestBody LoginDto register) {
+        // TODO: 邮箱合法性验证 + 密码合法性验证
+
+        User user = userService.getUserByEmail(register.getEmail());
+        if (user != null) {
+            return ResultFactory.buildResult(ResultCode.EXISTS_EMAIL, "邮箱已存在", null);
+        }
+
+        return ResultFactory.buildProcessedResult(userService.register(register));
     }
 
     /**
      * 用户登录接口
-     * @param user 登录信息
+     * @param login 登录信息
      * @return 处理结果
      */
     @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        return null;
+    public Result login(@RequestBody LoginDto login) {
+        // TODO: 邮箱合法性验证 + 密码合法性验证
+
+        User user = userService.getUserByEmail(login.getEmail());
+        if (user == null) {
+            return ResultFactory.buildResult(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在", null);
+        }
+        return ResultFactory.buildProcessedResult(userService.login(login));
     }
 
     @PostMapping("/logout")

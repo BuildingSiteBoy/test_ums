@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author Zanezeng
- * @since 2022-07-26
+ * @since 2022-08-01
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,7 +26,7 @@ public class User implements Serializable {
      * userId, 唯一值
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 邮箱，匹配该正则"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$"
@@ -39,14 +39,19 @@ public class User implements Serializable {
     private String password;
 
     /**
-     * 昵称
+     * 用户昵称，支持 emoji，最大 32 个字符
      */
     private String nickname;
 
     /**
-     * 家庭住址
+     * 用户地址，最大长度 255 个字符
      */
     private String address;
+
+    /**
+     * 版本信息
+     */
+    private Integer version;
 
     /**
      * 创建时间

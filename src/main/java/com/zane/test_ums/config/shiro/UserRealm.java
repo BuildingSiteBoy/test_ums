@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserRealm extends AuthorizingRealm {
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
-    public void setUserService(UserService userService){
+    public UserRealm(UserService userService) {
         this.userService = userService;
     }
 

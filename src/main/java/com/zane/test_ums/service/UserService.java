@@ -1,8 +1,11 @@
 package com.zane.test_ums.service;
 
-import com.zane.test_ums.entity.AlterDto;
-import com.zane.test_ums.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zane.test_ums.dto.AlterDto;
+import com.zane.test_ums.dto.LoginDto;
+import com.zane.test_ums.dto.RegisterDto;
+import com.zane.test_ums.dto.UserDto;
+import com.zane.test_ums.entity.User;
 
 /**
  * <p>
@@ -10,15 +13,22 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author Zanezeng
- * @since 2022-07-26
+ * @since 2022-08-01
  */
 public interface UserService extends IService<User> {
     /**
      * 注册用户
-     * @param user：注册用户
+     * @param register：注册用户
      * @return 0:用户名或密码为空；1：注册成功；2：用户已存在
      */
-    int register(User user);
+    RegisterDto register(LoginDto register);
+
+    /**
+     * 用户登录
+     * @param login：登录用户
+     * @return userDto
+     */
+    UserDto login(LoginDto login);
 
     /**
      * 通过邮箱获取用户信息
@@ -35,8 +45,9 @@ public interface UserService extends IService<User> {
     String getPassword(String username);
 
     /**
-     * 根据userId 更改用户信息
+     * 更新用户信息
      * @param userId：用户id
+     * @param userInfo：用户信息/*
      */
     void editUser(int userId, AlterDto userInfo);
 

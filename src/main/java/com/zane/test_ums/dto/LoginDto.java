@@ -1,4 +1,4 @@
-package com.zane.test_ums.entity;
+package com.zane.test_ums.dto;
 
 import java.io.Serializable;
 
