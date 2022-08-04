@@ -7,8 +7,13 @@ import com.zane.test_ums.dto.LoginDto;
 import com.zane.test_ums.dto.RegisterDto;
 import com.zane.test_ums.dto.UserDto;
 import com.zane.test_ums.entity.User;
+import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.mapper.UserMapper;
+import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.UserService;
+import com.zane.test_ums.util.AesCipherUtil;
+import com.zane.test_ums.util.DateTimeUtil;
+import com.zane.test_ums.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +33,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public RegisterDto register(LoginDto register) {
-        return null;
+        if (getUserByEmail(register.getEmail()) != null) {
+            throw new MyException(ResultCode.EXISTS_EMAIL, "邮箱已存在！！！");
+        }
+
+        User user = new User();
+        user.setEmail(register.getEmail());
+
+        String encodePassword = AesCipherUtil.encrypt(register.getPassword());
+        user.setPassword(encodePassword);
+
+        user.setCreateTime(DateTimeUtil.getUtc());
+        user.setUpdateTime(DateTimeUtil.getUtc());
+
+        userMapper.insert(user);
+
+        user = getUserByEmail(register.getEmail());
+        System.out.println(user);
+
+        return new RegisterDto(user.getId(), user.getCreateTime());
     }
 
     @Override
     public UserDto login(LoginDto login) {
-        return null;
+        User user = getUserByEmail(login.getEmail());
+        if (user == null) {
+            throw new MyException(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在！！！");
+        }
+
+        String encodePassword = AesCipherUtil.encrypt(login.getPassword());
+        if (!encodePassword.equals(user.getPassword())) {
+            throw new MyException(ResultCode.ERROR_PASSWORD, "密码不正确！！！");
+        }
+
+        String token = JwtUtil.encode(user.getEmail(), user.getPassword());
+//        httpServletResponse.setHeader("Authorization", token);
+//        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
+
+        UserDto myUser = new UserDto();
+        myUser.setToken(token);
+        myUser.setExpiresIn((int) JwtUtil.EXPIRE_TIME / 1000);
+        myUser.setUserId(user.getId());
+        myUser.setEmail(user.getEmail());
+        myUser.setNickname(user.getNickname());
+        myUser.setAddress(user.getAddress());
+        myUser.setCreateAt(user.getCreateTime());
+        myUser.setUpdateAt(user.getUpdateTime());
+
+        return myUser;
     }
 
     @Override
@@ -44,15 +91,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public String getPassword(String username) {
-        return null;
+    public String getPassword(String email) {
+        return getUserByEmail(email).getPassword();
     }
 
     @Override
-    public void editUser(int userId, AlterDto userInfo) {
+    public void editUser(long userId, AlterDto userInfo) {
         User user = getById(userId);
         user.setNickname(userInfo.getNickname());
         user.setAddress(userInfo.getAddress());
+//        user.setUpdateTime();
         userMapper.updateById(user);
     }
 

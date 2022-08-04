@@ -40,13 +40,24 @@ public class ExceptionController {
     }
 
     /**
+     * 捕捉其他多有自定义的异常
+     * @param e 自定义异常
+     * @return
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MyException.class)
+    public Result handle(MyException e) {
+        return ResultFactory.buildResult(e.getResultCode(), e.getMessage(), null);
+    }
+
+    /**
      * 捕捉其他所有异常
      * @param request 请求
      * @param ex 异常
      * @return result
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result globalException(HttpServletRequest request, Throwable ex) {
         return ResultFactory.buildResult(getStatus(request).value(), ex.getMessage(), null);
     }

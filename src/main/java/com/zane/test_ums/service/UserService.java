@@ -19,9 +19,9 @@ public interface UserService extends IService<User> {
     /**
      * 注册用户
      * @param register：注册用户
-     * @return 0:用户名或密码为空；1：注册成功；2：用户已存在
+     * @return userId + time
      */
-    RegisterDto register(LoginDto register);
+     RegisterDto register(LoginDto register);
 
     /**
      * 用户登录
@@ -39,17 +39,17 @@ public interface UserService extends IService<User> {
 
     /**
      * 通过用户名获取密码
-     * @param username：用户名
+     * @param email: 邮箱
      * @return password
      */
-    String getPassword(String username);
+    String getPassword(String email);
 
     /**
      * 更新用户信息
      * @param userId：用户id
      * @param userInfo：用户信息/*
      */
-    void editUser(int userId, AlterDto userInfo);
+    void editUser(long userId, AlterDto userInfo);
 
     /**
      * 根据userId 修改用户密码

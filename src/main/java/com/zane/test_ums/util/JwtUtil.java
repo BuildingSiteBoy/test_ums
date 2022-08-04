@@ -22,7 +22,7 @@ public class JwtUtil {
     /**
      * 过期时间5分钟
      */
-    private static final long EXPIRE_TIME = 5 * 60 * 1000;
+    public static final long EXPIRE_TIME = 5 * 60 * 1000;
 
     /**
      * 校验token是否正确
