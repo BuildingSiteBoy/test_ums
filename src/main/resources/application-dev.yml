@@ -22,6 +22,8 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
+    hikari:
+      connection-init-sql: set names utf8mb4
   redis:
     host: localhost
     port: 6379

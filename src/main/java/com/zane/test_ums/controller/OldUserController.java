@@ -10,6 +10,7 @@ import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.util.AesCipherUtil;
+import com.zane.test_ums.util.CheckUtil;
 import com.zane.test_ums.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,15 +46,28 @@ public class OldUserController {
     public Result getUserInfo() {
         // 根据用户凭证获取id
 //        long id = userUtil.getUserId();
-        return ResultFactory.buildSuccessResult(userService.getById(1L));
+        long id = 2L;
+        System.out.println(userService.getById(id));
+        return ResultFactory.buildSuccessResult(userService.getById(id));
     }
 
     @PostMapping("/updateUserInfo")
     public Result updateUserInfo(@RequestBody AlterDto alterDto) {
-        // TODO: 昵称合法性 + 地址合法性
-        User user = userService.getById(userUtil.getUserId());
-        user.setNickname(alterDto.getNickname());
-        user.setAddress(alterDto.getAddress());
+        String nickname = alterDto.getNickname();
+        String address = alterDto.getAddress();
+
+        // DONE: 昵称合法性 + 地址合法性
+        if (!CheckUtil.checkNickname(nickname)) {
+            throw new MyException(ResultCode.ILLEGAL_NICKNAME, "昵称不合法！！！");
+        }
+        if (!CheckUtil.checkAddress(address)) {
+            throw new MyException(ResultCode.ILLEGAL_ADDRESS, "地址不合法！！！");
+        }
+
+//        User user = userService.getById(userUtil.getUserId());
+        User user = userService.getById(2L);
+        user.setNickname(nickname);
+        user.setAddress(address);
         userService.updateById(user);
         return ResultFactory.buildProcessedResult(null);
     }
@@ -63,17 +77,24 @@ public class OldUserController {
         String oldPassword = passwordDto.getOldPassword();
         String newPassword = passwordDto.getNewPassword();
 
-        // TODO: 验证新老密码是否合法
+        // DONE: 验证新老密码是否合法
+        if (!CheckUtil.checkPassword(oldPassword)) {
+            throw new MyException(ResultCode.ILLEGAL_OLD_PASSWORD, "老密码不合法！！！");
+        }
+        if (!CheckUtil.checkPassword(newPassword)) {
+            throw new MyException(ResultCode.ILLEGAL_NEW_PASSWORD, "新密码不合法！！！");
+        }
 
         oldPassword = AesCipherUtil.encrypt(oldPassword);
-        User user = userService.getById(userUtil.getUserId());
+//        User user = userService.getById(userUtil.getUserId());
+        User user = userService.getById(2L);
         if (oldPassword.equals(user.getPassword())) {
             newPassword = AesCipherUtil.encrypt(newPassword);
             user.setPassword(newPassword);
             userService.updateById(user);
             return ResultFactory.buildProcessedResult(null);
         } else {
-            throw new MyException(ResultCode.ERROR_PASSWORD, "密码错误");
+            throw new MyException(ResultCode.ERROR_PASSWORD, "老密码不正确！！！");
         }
     }
 }
