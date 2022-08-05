@@ -7,6 +7,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.zane.test_ums.exception.MyException;
+import com.zane.test_ums.result.ResultCode;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,8 +41,8 @@ public class JwtUtil {
                     .build();
             verifier.verify(token);
             return true;
-        } catch (Exception exception) {
-            return false;
+        } catch (RuntimeException e) {
+            throw new MyException(ResultCode.ERROR_TOKEN, "JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
     }
 
@@ -61,7 +63,7 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
-            return null;
+            throw new MyException(ResultCode.ERROR_TOKEN, "JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
     }
 
@@ -74,7 +76,7 @@ public class JwtUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("email").asString();
         } catch (JWTDecodeException e) {
-            return null;
+            throw new MyException(ResultCode.ERROR_TOKEN, "解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
         }
     }
 }

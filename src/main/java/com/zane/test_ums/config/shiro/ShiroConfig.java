@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.Filter;
 
+import com.zane.test_ums.config.shiro.cache.MyCacheManager;
 import com.zane.test_ums.config.shiro.jwt.JwtFilter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -23,6 +24,9 @@ import org.springframework.context.annotation.DependsOn;
 @Configuration
 public class ShiroConfig {
 
+    /**
+     * 配置使用自定义的Realm，关闭Shiro自带的session
+     */
     @Bean("securityManager")
     public DefaultWebSecurityManager getManager(UserRealm realm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
@@ -36,11 +40,15 @@ public class ShiroConfig {
         subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
         manager.setSubjectDAO(subjectDAO);
 
-        // TODO: 设置自定义的Cache缓存
+        // DONE: 设置自定义的Cache缓存
+        manager.setCacheManager(new MyCacheManager());
 
         return manager;
     }
 
+    /**
+     * 添加自己的过滤器，自定义url规则
+     */
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean factory(DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();

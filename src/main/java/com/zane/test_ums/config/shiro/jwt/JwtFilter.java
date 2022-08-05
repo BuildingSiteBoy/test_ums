@@ -6,7 +6,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zane.test_ums.util.JwtUtil;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JWT过滤
@@ -14,11 +17,12 @@ import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
  * @author Zanezeng
  */
 public class JwtFilter extends BasicHttpAuthenticationFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+
     /**
      * 判断用户会否想要登入：检测header里面是否包含Authorization字段即可
-     * @param request
-     * @param response
-     * @return
+     * 有token 就进行登录认证授权
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
@@ -28,11 +32,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * 执行登录行为
-     * @param request
-     * @param response
-     * @return
-     * @throws Exception
+     * 执行登录行为，进行AccessToken 登录认证授权
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
@@ -67,6 +67,19 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
         return super.preHandle(request, response);
+    }
+
+    /**
+     * 此处为AccessToken刷新，进行判断RefreshToken是否过期，未过期就返回新的AccessToken且继续正常访问
+     */
+    private boolean refreshToken(ServletRequest request, ServletResponse response) {
+        // 拿到当前Header中Authorization的AccessToken(Shiro中getAuthzHeader方法已经实现)
+        String token = this.getAuthzHeader(request);
+        // 获取当前Token的账户信息
+        String email = JwtUtil.decode(token);
+        // 判断redis中RefreshToken是否存在
+//        if ()
+        return true;
     }
 
     /**
