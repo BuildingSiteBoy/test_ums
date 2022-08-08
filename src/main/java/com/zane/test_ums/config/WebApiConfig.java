@@ -1,7 +1,9 @@
 package com.zane.test_ums.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -9,7 +11,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 解决跨域问题：所有请求都允许跨域，使用这种配置方法就不能在 filter中再配置header
  */
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class WebApiConfig implements WebMvcConfigurer {
+
+    @Autowired
+    Interceptor interceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        /**
+         * interceptor: 拦截器实例
+         * path: 设置拦截器的过滤路径规则
+         * excludePath: 设置不需要拦截的过滤规则
+         */
+        String path = "/**";
+        String[] excludePath = {"/api/v1/user/register", "/api/v1/user/login"};
+
+        registry.addInterceptor(interceptor)
+                .addPathPatterns(path)
+                .excludePathPatterns(excludePath);
+    }
+
+    /**
+     * 跨域请求处理
+     * @param registry
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")

@@ -1,14 +1,12 @@
 package com.zane.test_ums.controller;
 
 import com.zane.test_ums.dto.LoginDto;
-import com.zane.test_ums.entity.User;
 import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.result.Result;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.util.CheckUtil;
-import com.zane.test_ums.util.UserUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/user")
 public class AccountController {
-    private final UserUtil userUtil;
-
     private final UserService userService;
 
-    public AccountController(UserUtil userUtil, UserService userService) {
-        this.userUtil = userUtil;
+    public AccountController(UserService userService) {
         this.userService = userService;
     }
 
@@ -67,10 +62,6 @@ public class AccountController {
             throw new MyException(ResultCode.ILLEGAL_PASSWORD, "密码不合法！！！");
         }
 
-        User user = userService.getUserByEmail(login.getEmail());
-        if (user == null) {
-            return ResultFactory.buildResult(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在", null);
-        }
         return ResultFactory.buildProcessedResult(userService.login(login));
     }
 
@@ -80,7 +71,7 @@ public class AccountController {
      */
     @PostMapping("/logout")
     public Result logout() {
-        User user = userUtil.getUser();
-        return null;
+        userService.logout();
+        return ResultFactory.buildProcessedResult(null);
     }
 }

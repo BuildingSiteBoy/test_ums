@@ -1,10 +1,7 @@
 package com.zane.test_ums.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zane.test_ums.dto.AlterDto;
-import com.zane.test_ums.dto.LoginDto;
-import com.zane.test_ums.dto.RegisterDto;
-import com.zane.test_ums.dto.UserDto;
+import com.zane.test_ums.dto.*;
 import com.zane.test_ums.entity.User;
 
 /**
@@ -31,11 +28,22 @@ public interface UserService extends IService<User> {
     UserDto login(LoginDto login);
 
     /**
+     * 用户登出
+     */
+    void logout();
+
+    /**
      * 通过邮箱获取用户信息
      * @param email 邮箱
      * @return 用户
      */
     User getUserByEmail(String email);
+
+    /**
+     * 通过token获取当前用户信息
+     * @return userInfoDto
+     */
+    UserInfoDto getUserInfoDto();
 
     /**
      * 通过用户名获取密码
@@ -46,14 +54,13 @@ public interface UserService extends IService<User> {
 
     /**
      * 更新用户信息
-     * @param userId：用户id
      * @param userInfo：用户信息/*
      */
-    void editUser(long userId, AlterDto userInfo);
+    void editUser(AlterDto userInfo);
 
     /**
      * 根据userId 修改用户密码
-     * @param userId：用户id
+     * @param passwordDto：新老密码
      */
-    void resetPassword(int userId);
+    void resetPassword(PasswordDto passwordDto);
 }

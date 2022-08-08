@@ -2,18 +2,17 @@ package com.zane.test_ums.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zane.test_ums.dto.AlterDto;
-import com.zane.test_ums.dto.LoginDto;
-import com.zane.test_ums.dto.RegisterDto;
-import com.zane.test_ums.dto.UserDto;
+import com.zane.test_ums.dto.*;
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.util.AesCipherUtil;
 import com.zane.test_ums.util.DateTimeUtil;
 import com.zane.test_ums.util.JwtUtil;
+import com.zane.test_ums.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    UserUtil userUtil;
+
+    @Autowired
+    TokenService tokenService;
 
     @Override
     public RegisterDto register(LoginDto register) {
@@ -49,7 +54,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userMapper.insert(user);
 
         user = getUserByEmail(register.getEmail());
-        System.out.println(user);
 
         return new RegisterDto(user.getId(), user.getCreateTime());
     }
@@ -67,8 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         String token = JwtUtil.encode(user.getEmail(), user.getPassword());
-//        httpServletResponse.setHeader("Authorization", token);
-//        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
+        tokenService.saveToken(user.getId(), token);
 
         UserDto myUser = new UserDto();
         myUser.setToken(token);
@@ -84,10 +87,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public void logout() {
+        // DONE: 清空用户凭证
+        Long userId = userUtil.getUserId();
+        tokenService.clearToken(userId);
+    }
+
+    @Override
     public User getUserByEmail(String email) {
         return userMapper.selectOne(
                 new QueryWrapper<User>().eq("email", email)
         );
+    }
+
+    @Override
+    public UserInfoDto getUserInfoDto() {
+        UserInfoDto userInfoDto = new UserInfoDto();
+        User user = userMapper.selectById(userUtil.getUserId());
+        userInfoDto.setUserId(user.getId());
+        userInfoDto.setEmail(user.getEmail());
+        userInfoDto.setNickname(user.getNickname());
+        userInfoDto.setAddress(user.getAddress());
+        userInfoDto.setCreateAt(user.getCreateTime());
+        userInfoDto.setUpdateAt(user.getUpdateTime());
+        return userInfoDto;
     }
 
     @Override
@@ -96,16 +119,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void editUser(long userId, AlterDto userInfo) {
-        User user = getById(userId);
+    public void editUser(AlterDto userInfo) {
+        User user = getById(userUtil.getUserId());
         user.setNickname(userInfo.getNickname());
         user.setAddress(userInfo.getAddress());
-//        user.setUpdateTime();
+        user.setUpdateTime(DateTimeUtil.getUtc());
         userMapper.updateById(user);
     }
 
     @Override
-    public void resetPassword(int userId) {
+    public void resetPassword(PasswordDto passwordDto) {
+        String oldPassword = passwordDto.getOldPassword();
+        String newPassword = passwordDto.getNewPassword();
 
+        oldPassword = AesCipherUtil.encrypt(oldPassword);
+        User user = getById(userUtil.getUserId());
+        if (oldPassword.equals(user.getPassword())) {
+            newPassword = AesCipherUtil.encrypt(newPassword);
+            user.setPassword(newPassword);
+            user.setUpdateTime(DateTimeUtil.getUtc());
+            userMapper.updateById(user);
+        } else {
+            throw new MyException(ResultCode.ERROR_PASSWORD, "老密码不正确！！！");
+        }
     }
 }

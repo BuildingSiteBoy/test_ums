@@ -1,10 +1,12 @@
 package com.zane.test_ums.util;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.exception.MyException;
+import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
-import com.zane.test_ums.service.UserService;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,19 +15,18 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserUtil {
-    private final UserService userService;
+    private final UserMapper userMapper;
+
+    private final HttpServletRequest request;
 
     @Autowired
-    public UserUtil(UserService userService) {
-        this.userService = userService;
+    public UserUtil(UserMapper userMapper, HttpServletRequest request) {
+        this.userMapper = userMapper;
+        this.request = request;
     }
 
-    /**
-     * 获取当前登录用户Token
-     * @return token
-     */
     public String getToken() {
-        return SecurityUtils.getSubject().getPrincipal().toString();
+        return request.getHeader("Authorization");
     }
 
     /**
@@ -41,7 +42,9 @@ public class UserUtil {
      * @return User
      */
     public User getUser(){
-        User user = userService.getUserByEmail(getEmail());
+        User user = userMapper.selectOne(
+                new QueryWrapper<User>().eq("email", getEmail())
+        );
         // 判断用户是否存在
         if (user == null) {
             throw new MyException(ResultCode.NON_EXISTS_EMAIL, "该邮箱不存在");
