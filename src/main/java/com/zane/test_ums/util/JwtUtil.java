@@ -24,7 +24,7 @@ public class JwtUtil {
     /**
      * 过期时间5分钟
      */
-    public static final long EXPIRE_TIME = 5 * 60 * 1000;
+    public static final long EXPIRE_TIME = 30 * 60 * 1000;
 
     /**
      * 校验token是否正确
@@ -42,7 +42,8 @@ public class JwtUtil {
             verifier.verify(token);
             return true;
         } catch (RuntimeException e) {
-            throw new MyException(ResultCode.ERROR_TOKEN, "用户凭证错误：JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
+            throw new MyException(ResultCode.ERROR_TOKEN,
+                    "用户凭证错: JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
     }
 
@@ -63,7 +64,7 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
-            throw new MyException(ResultCode.ERROR_TOKEN, "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
+            throw new MyException(ResultCode.SERVER_ERROR, "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
     }
 
