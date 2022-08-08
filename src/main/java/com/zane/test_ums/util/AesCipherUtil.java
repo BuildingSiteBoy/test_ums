@@ -36,7 +36,7 @@ public class AesCipherUtil {
 
             byte[] encrypted = cipher.doFinal(plainText.getBytes(ENCODING));
             String cipherText = Base64.encodeBase64String(encrypted);
-            System.out.println(plainText + "++++" + cipherText);
+
             return cipherText;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -60,7 +60,7 @@ public class AesCipherUtil {
             byte[] encrypted = Base64.decodeBase64(cipherText);
             byte[] original = cipher.doFinal(encrypted);
             String plainText = new String(original, ENCODING);
-            System.out.println(cipherText + "----" + plainText);
+
             return plainText;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -45,7 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         user.setEmail(register.getEmail());
 
-        String encodePassword = AesCipherUtil.encrypt(register.getPassword());
+        String encodePassword = AesCipherUtil.encrypt(register.getEmail() + register.getPassword());
         user.setPassword(encodePassword);
 
         user.setCreateTime(DateTimeUtil.getUtc());
@@ -65,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new MyException(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在！！！");
         }
 
-        String encodePassword = AesCipherUtil.encrypt(login.getPassword());
+        String encodePassword = AesCipherUtil.encrypt(login.getEmail() + login.getPassword());
         if (!encodePassword.equals(user.getPassword())) {
             throw new MyException(ResultCode.ERROR_PASSWORD, "密码不正确！！！");
         }
@@ -132,10 +132,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String oldPassword = passwordDto.getOldPassword();
         String newPassword = passwordDto.getNewPassword();
 
-        oldPassword = AesCipherUtil.encrypt(oldPassword);
         User user = getById(userUtil.getUserId());
+        oldPassword = AesCipherUtil.encrypt(user.getEmail() + oldPassword);
         if (oldPassword.equals(user.getPassword())) {
-            newPassword = AesCipherUtil.encrypt(newPassword);
+            newPassword = AesCipherUtil.encrypt(user.getEmail() + newPassword);
             user.setPassword(newPassword);
             user.setUpdateTime(DateTimeUtil.getUtc());
             userMapper.updateById(user);

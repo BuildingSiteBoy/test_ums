@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    username: root
-    password: 123456
-    url: jdbc:mysql://localhost:3306/user_management?userUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: user
+    password: user@1234
+    url: jdbc:mysql://192.168.10.151:3306/zane_user?userUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
@@ -22,6 +22,19 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
+    hikari:
+      connection-init-sql: set names utf8mb4
+  redis:
+    host: 192.168.10.151
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 3000
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml

@@ -64,7 +64,8 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
-            throw new MyException(ResultCode.SERVER_ERROR, "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
+            throw new MyException(ResultCode.SERVER_ERROR,
+                    "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
     }
 
@@ -77,7 +78,8 @@ public class JwtUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("email").asString();
         } catch (JWTDecodeException e) {
-            throw new MyException(ResultCode.ERROR_TOKEN, "用户凭证错误：解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
+            throw new MyException(ResultCode.ERROR_TOKEN,
+                    "用户凭证错误：解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
         }
     }
 }
