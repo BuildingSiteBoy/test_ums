@@ -9,10 +9,10 @@ import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.util.AesCipherUtil;
 import com.zane.test_ums.util.DateTimeUtil;
 import com.zane.test_ums.util.JwtUtil;
 import com.zane.test_ums.util.UserUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         user.setEmail(register.getEmail());
 
-        String encodePassword = AesCipherUtil.encrypt(register.getEmail() + register.getPassword());
+        String encodePassword = BCrypt.hashpw(register.getPassword(), BCrypt.gensalt());
         user.setPassword(encodePassword);
 
         user.setCreateTime(DateTimeUtil.getUtc());
@@ -65,8 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new MyException(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在！！！");
         }
 
-        String encodePassword = AesCipherUtil.encrypt(login.getEmail() + login.getPassword());
-        if (!encodePassword.equals(user.getPassword())) {
+        if (!BCrypt.checkpw(login.getPassword(), user.getPassword())) {
             throw new MyException(ResultCode.ERROR_PASSWORD, "密码不正确！！！");
         }
 
@@ -133,9 +132,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String newPassword = passwordDto.getNewPassword();
 
         User user = getById(userUtil.getUserId());
-        oldPassword = AesCipherUtil.encrypt(user.getEmail() + oldPassword);
-        if (oldPassword.equals(user.getPassword())) {
-            newPassword = AesCipherUtil.encrypt(user.getEmail() + newPassword);
+        if (BCrypt.checkpw(oldPassword, user.getPassword())) {
+            newPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPassword(newPassword);
             user.setUpdateTime(DateTimeUtil.getUtc());
             userMapper.updateById(user);

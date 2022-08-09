@@ -3,10 +3,7 @@ package com.zane.test_ums.exception;
 import javax.servlet.http.HttpServletRequest;
 
 import com.zane.test_ums.result.Result;
-import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
-import org.apache.shiro.ShiroException;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,26 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 public class ExceptionController {
-    /**
-     * 捕捉shiro的异常
-     * @param e 异常
-     * @return result
-     */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(ShiroException.class)
-    public Result handle401(ShiroException e) {
-        return new Result(401, e.getMessage(), null);
-    }
-
-    /**
-     * 捕捉UnauthorizedException
-     * @return result
-     */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UnauthorizedException.class)
-    public Result handle401() {
-        return ResultFactory.buildResult(ResultCode.UNAUTHORIZED, "Unauthorized", null);
-    }
 
     /**
      * 捕捉其他多有自定义的异常
