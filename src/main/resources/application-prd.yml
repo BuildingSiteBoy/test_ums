@@ -38,3 +38,6 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+
+logging:
+  config: classpath:logback-prd.xml

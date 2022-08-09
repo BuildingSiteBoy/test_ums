@@ -1,6 +1,7 @@
 server:
   port: 8081
 
+
 spring:
   datasource:
     username: root
@@ -38,3 +39,6 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+
+logging:
+  config: classpath:logback.xml

@@ -9,6 +9,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.result.ResultCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
  * @author Zanezeng
  */
 @Component
+@Slf4j
 public class JwtUtil {
 
     /**
@@ -42,6 +44,7 @@ public class JwtUtil {
             verifier.verify(token);
             return true;
         } catch (RuntimeException e) {
+            log.error("JWTToken认证解密出现UnsupportedEncodingException异常:{}", e.getMessage());
             throw new MyException(ResultCode.ERROR_TOKEN,
                     "用户凭证错: JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
@@ -64,6 +67,7 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
+            log.error("错误信息JWTToken加密出现UnsupportedEncodingException异常:{}", e.getMessage());
             throw new MyException(ResultCode.SERVER_ERROR,
                     "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
@@ -78,6 +82,7 @@ public class JwtUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("email").asString();
         } catch (JWTDecodeException e) {
+            log.error("解密Token中的公共信息出现JWTDecodeException异常:{}", e.getMessage());
             throw new MyException(ResultCode.ERROR_TOKEN,
                     "用户凭证错误：解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
         }

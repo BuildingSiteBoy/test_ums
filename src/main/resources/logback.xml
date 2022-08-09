@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--设置模块名，用于日志文件名 和项目文件夹名字一致-->
+    <property name="moduleName" value="test-ums"/>
+    <!-- 输出格式 -->
+    <property name="outPattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %class:%-4line %-5level - %m%n"/>
+    <!-- 定义日志文件 输入位置 -->
+    <property name="logPath" value="E:/02code/logging/log01-ums/${moduleName}"/>
+    <!-- 日志最大的历史 30天 -->
+    <property name="maxHistory" value="7"/>
+    <property name="maxLogSize" value="200MB" />
+
+    <!-- 配置项， 通过此节点配置日志输出位置（控制台、文件、数据库）、输出格式等-->
+    <!-- ConsoleAppender代表输出到控制台 -->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- layout代表输出格式 -->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${outPattern}</pattern>
+        </layout>
+    </appender>
+
+    <!-- 日志输出文件 -->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${moduleName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logPath}/${moduleName}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxLogSize}</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${outPattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 特殊记录Error日志 -->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${moduleName}-error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${moduleName}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxLogSize}</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${outPattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- root 默认日志配置 ，只能为ERROR或者WARN！-->
+    <root level="error">
+        <appender-ref ref="fileErrorLog" />
+    </root>
+
+    <!--业务模块的包的日志配置-->
+    <logger name="com.zane" level="info">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileInfoLog"/>
+    </logger>
+
+</configuration>
