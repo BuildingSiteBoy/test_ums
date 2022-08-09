@@ -47,7 +47,7 @@ public class UserUtil {
         );
         // 判断用户是否存在
         if (user == null) {
-            throw new MyException(ResultCode.NON_EXISTS_EMAIL, "该邮箱不存在");
+            throw new MyException(ResultCode.ERROR_TOKEN, "用户凭证错误");
         }
         return user;
     }

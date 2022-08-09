@@ -54,7 +54,8 @@ public class TokenServiceImpl implements TokenService {
         long len = redisUtil.lGetListSize(key);
         for (int i = 0; i < len ; i++) {
             String tokenKey = PREFIX_REDIS_TOKEN + redisUtil.lGetIndex(key, i);
-            redisUtil.rPop(tokenKey);
+            redisUtil.del(tokenKey);
+            redisUtil.rPop(key);
         }
         redisUtil.del(key);
     }
