@@ -42,7 +42,7 @@ public class ExceptionController {
     /**
      * 捕捉其他多有自定义的异常
      * @param e 自定义异常
-     * @return
+     * @return result
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MyException.class)

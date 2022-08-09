@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
     username: user
     password: user@1234
-    url: jdbc:mysql://192.168.10.151:3306/zane_user?userUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://192.168.10.151:3306/training_2022?userUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource

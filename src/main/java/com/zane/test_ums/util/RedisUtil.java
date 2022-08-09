@@ -2,7 +2,6 @@ package com.zane.test_ums.util;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +65,6 @@ public final class RedisUtil {
      * 删除缓存
      * @param key 可以传一个值 或多个
      */
-    @SuppressWarnings("unchecked")
     public void del(String... key) {
         if (key != null && key.length > 0) {
             if (key.length == 1) {
@@ -97,54 +95,6 @@ public final class RedisUtil {
     }
 
 
-    // ============================String=============================
-    /**
-     * 普通缓存获取
-     * @param key 键
-     * @return 值
-     */
-    public Object get(String key) {
-        return key == null ? null : redisTemplate.opsForValue().get(key);
-    }
-
-    /**
-     * 普通缓存放入
-     * @param key   键
-     * @param value 值
-     * @return true成功 false失败
-     */
-    public boolean set(String key, Object value) {
-        try {
-            redisTemplate.opsForValue().set(key, value);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 普通缓存放入并设置时间
-     * @param key   键
-     * @param value 值
-     * @param time  时间(秒) time要大于0 如果time小于等于0 将设置无限期
-     * @return true成功 false 失败
-     */
-    public boolean set(String key, Object value, long time) {
-        try {
-            if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
-            } else {
-                set(key, value);
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
     // ================================Map=================================
 
     /**
@@ -154,15 +104,6 @@ public final class RedisUtil {
      */
     public Object hGet(String key, String item) {
         return redisTemplate.opsForHash().get(key, item);
-    }
-
-    /**
-     * 获取hashKey对应的所有键值
-     * @param key 键
-     * @return 对应的多个键值
-     */
-    public Map<Object, Object> hmGet(String key) {
-        return redisTemplate.opsForHash().entries(key);
     }
 
     /**
@@ -201,25 +142,6 @@ public final class RedisUtil {
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * 删除hash表中的值
-     * @param key  键 不能为null
-     * @param item 项 可以使多个 不能为null
-     */
-    public void hDel(String key, Object... item) {
-        redisTemplate.opsForHash().delete(key, item);
-    }
-
-    /**
-     * 判断hash表中是否有该项的值
-     * @param key  键 不能为null
-     * @param item 项 不能为null
-     * @return true 存在 false不存在
-     */
-    public boolean hHasKey(String key, String item) {
-        return redisTemplate.opsForHash().hasKey(key, item);
     }
 
 
@@ -312,24 +234,6 @@ public final class RedisUtil {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    /**
-     * 移除N个值为value
-     * @param key   键
-     * @param count 移除多少个
-     * @param value 值
-     * @return 移除的个数
-     */
-    public long lRemove(String key, long count, Object value) {
-        try {
-            Long remove = redisTemplate.opsForList().remove(key, count, value);
-
-            return remove;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
         }
     }
 

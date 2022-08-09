@@ -1,6 +1,5 @@
 package com.zane.test_ums.util;
 
-import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,7 +16,6 @@ public class AesCipherUtil {
      * AES加密私钥
      */
     private static final String AES_ENCRYPT_KEY = "U0JBUElKV1RkNA==";
-
     private static final String ENCODING = "UTF-8";
     private static final String FILL_VECTOR = "1234560405060708";
 
@@ -35,9 +33,8 @@ public class AesCipherUtil {
             cipher.init(Cipher.ENCRYPT_MODE, sKeySpec, iv);
 
             byte[] encrypted = cipher.doFinal(plainText.getBytes(ENCODING));
-            String cipherText = Base64.encodeBase64String(encrypted);
 
-            return cipherText;
+            return Base64.encodeBase64String(encrypted);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -59,24 +56,11 @@ public class AesCipherUtil {
 
             byte[] encrypted = Base64.decodeBase64(cipherText);
             byte[] original = cipher.doFinal(encrypted);
-            String plainText = new String(original, ENCODING);
 
-            return plainText;
+            return new String(original, ENCODING);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("请输入要加密的明文：");
-
-        String encodeText = new Scanner(System.in).nextLine();
-
-        String cipherText = encrypt(encodeText);
-
-        System.out.println("---------------------------");
-
-        decrypt(cipherText);
     }
 }

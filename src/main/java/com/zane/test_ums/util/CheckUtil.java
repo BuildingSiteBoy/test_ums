@@ -1,7 +1,5 @@
 package com.zane.test_ums.util;
 
-import java.util.Scanner;
-
 import org.springframework.stereotype.Component;
 
 /**
@@ -56,22 +54,5 @@ public class CheckUtil {
         return address.length() < 256;
     }
 
-    public static void main(String[] args) {
-        String email = "";
-        String password = "";
-        do {
-            System.out.println("请输入邮箱号：");
-            Scanner in = new Scanner(System.in);
-            email = in.nextLine();
-            System.out.println(checkEmail(email) ? "right: " + email : "error");
-            System.out.println("请输入密码：");
-            password = in.nextLine();
-            if (checkPassword(password)) {
-                System.out.println("right: " + password);
-            } else {
-                System.out.println("error");
-            }
 
-        } while (!"exit".equals(email));
-    }
 }
