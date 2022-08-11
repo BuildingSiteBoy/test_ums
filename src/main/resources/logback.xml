@@ -6,7 +6,7 @@
     <property name="outPattern"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %class:%-4line %-5level - %m%n"/>
     <!-- 定义日志文件 输入位置 -->
-    <property name="logPath" value="E:/02code/logging/log01-ums/${moduleName}"/>
+    <property name="logPath" value="logs/${moduleName}"/>
     <!-- 日志最大的历史 30天 -->
     <property name="maxHistory" value="7"/>
     <property name="maxLogSize" value="200MB" />
