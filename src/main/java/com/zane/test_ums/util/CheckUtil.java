@@ -1,5 +1,8 @@
 package com.zane.test_ums.util;
 
+import com.zane.test_ums.dto.LoginDto;
+import com.zane.test_ums.exception.MyException;
+import com.zane.test_ums.result.ResultCode;
 import org.springframework.stereotype.Component;
 
 /**
@@ -7,6 +10,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CheckUtil {
+
+    private CheckUtil() {
+    }
 
     /**
      * REGX_EMAIL: 验证邮箱的正则表达式
@@ -24,7 +30,7 @@ public class CheckUtil {
      * @return boolean
      */
     public static boolean checkEmail(String email) {
-        return email.matches(REGX_EMAIL);
+        return !email.matches(REGX_EMAIL);
     }
 
     /**
@@ -33,7 +39,21 @@ public class CheckUtil {
      * @return boolean
      */
     public static boolean checkPassword(String password) {
-        return password.matches(REGX_PASSWORD);
+        return !password.matches(REGX_PASSWORD);
+    }
+
+    /**
+     * 验证登录时邮箱和密码的合法性
+     * @param login 需验证的信息
+     */
+    public static void checkLogin(LoginDto login) {
+        // DONE: 邮箱合法性验证 + 密码合法性验证
+        if (CheckUtil.checkEmail(login.getEmail())) {
+            throw new MyException(ResultCode.ILLEGAL_EMAIL, "邮箱不合法！！！");
+        }
+        if (CheckUtil.checkPassword(login.getPassword())) {
+            throw new MyException(ResultCode.ILLEGAL_PASSWORD, "密码不合法！！！");
+        }
     }
 
     /**

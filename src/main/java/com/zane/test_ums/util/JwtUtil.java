@@ -26,7 +26,11 @@ public class JwtUtil {
     /**
      * 过期时间5分钟
      */
-    public static final long EXPIRE_TIME = 30 * 60 * 1000;
+    public static final long EXPIRE_TIME = 30 * 60 * 1000L;
+    public static final String CLAIM = "email";
+
+    private JwtUtil() {
+    }
 
     /**
      * 校验token是否正确
@@ -39,7 +43,7 @@ public class JwtUtil {
         try {
             Algorithm algorithm = Algorithm.HMAC256(password);
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withClaim("email", email)
+                    .withClaim(CLAIM, email)
                     .build();
             verifier.verify(token);
             return true;
@@ -63,7 +67,7 @@ public class JwtUtil {
             Algorithm algorithm = Algorithm.HMAC256(password);
             // 附带email信息
             return JWT.create()
-                    .withClaim("email", email)
+                    .withClaim(CLAIM, email)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
@@ -80,7 +84,7 @@ public class JwtUtil {
     public static String decode(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("email").asString();
+            return jwt.getClaim(CLAIM).asString();
         } catch (JWTDecodeException e) {
             log.error("解密Token中的公共信息出现JWTDecodeException异常:{}", e.getMessage());
             throw new MyException(ResultCode.ERROR_TOKEN,

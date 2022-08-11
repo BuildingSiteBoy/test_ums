@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class AlterDto implements Serializable {
+
     private String nickname;
 
     private String address;

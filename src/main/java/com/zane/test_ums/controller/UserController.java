@@ -1,6 +1,8 @@
 package com.zane.test_ums.controller;
 
 
+import java.time.LocalDateTime;
+
 import com.zane.test_ums.dto.AlterDto;
 import com.zane.test_ums.dto.PasswordDto;
 import com.zane.test_ums.dto.RegisterDto;
@@ -10,7 +12,6 @@ import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.util.CheckUtil;
-import com.zane.test_ums.util.DateTimeUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,7 +80,7 @@ public class UserController {
     public Result getHello() {
         RegisterDto result = new RegisterDto();
         result.setUserId(5L);
-        result.setCreateAt(DateTimeUtil.getUtc());
+        result.setCreateAt(LocalDateTime.now());
         return ResultFactory.buildSuccessResult(result);
     }
 }

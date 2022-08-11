@@ -16,15 +16,20 @@ public class TokenServiceImpl implements TokenService {
     private static final String PREFIX_REDIS_USER = "zane_user:";
     private static final String PREFIX_REDIS_TOKEN = "zane_token:";
     private static final long REDIS_EXPIRE_TIME = 1800;
+    private static final int LIST_LENGTH = 5;
+
+    private final RedisUtil redisUtil;
 
     @Autowired
-    RedisUtil redisUtil;
+    public TokenServiceImpl(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
+    }
 
     @Override
     public void saveToken(Long userId, String token) {
         String key = PREFIX_REDIS_USER + userId.toString();
         String tokenKey = PREFIX_REDIS_TOKEN + token;
-        if (redisUtil.hasKey(key) && redisUtil.lGetListSize(key) == 5) {
+        if (redisUtil.hasKey(key) && redisUtil.lGetListSize(key) == LIST_LENGTH) {
             redisUtil.rPop(key);
         }
         redisUtil.lSet(key, token, REDIS_EXPIRE_TIME);

@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class PasswordDto implements Serializable {
+
     private String oldPassword;
+
     private String newPassword;
 }

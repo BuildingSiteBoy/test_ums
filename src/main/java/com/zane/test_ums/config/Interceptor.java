@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.exception.MyException;
-import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.util.UserUtil;
@@ -20,17 +19,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class Interceptor implements HandlerInterceptor {
 
-    @Autowired
-    UserMapper userMapper;
+    private final UserUtil userUtil;
+
+    private final TokenService tokenService;
 
     @Autowired
-    UserUtil userUtil;
-
-    @Autowired
-    TokenService tokenService;
+    public Interceptor(UserUtil userUtil, TokenService tokenService) {
+        this.userUtil = userUtil;
+        this.tokenService = tokenService;
+    }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = request.getHeader("Authorization");
         User user = userUtil.getUser();
 

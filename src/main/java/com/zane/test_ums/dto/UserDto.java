@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class UserDto extends UserInfoDto implements Serializable {
+
     private String token;
 
     private Integer expiresIn;

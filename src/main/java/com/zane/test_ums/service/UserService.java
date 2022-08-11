@@ -46,13 +46,6 @@ public interface UserService extends IService<User> {
     UserInfoDto getUserInfoDto();
 
     /**
-     * 通过用户名获取密码
-     * @param email: 邮箱
-     * @return password
-     */
-    String getPassword(String email);
-
-    /**
      * 更新用户信息
      * @param userInfo：用户信息/*
      */

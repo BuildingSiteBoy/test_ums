@@ -9,17 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MyException extends RuntimeException {
-    private ResultCode resultCode;
-
-
-
-    public MyException() {
-        super();
-    }
-
-    public MyException(String msg){
-        super(msg);
-    }
+    private final ResultCode resultCode;
 
     public MyException(ResultCode resultCode, String msg) {
         super(msg);
@@ -32,7 +22,4 @@ public class MyException extends RuntimeException {
         return resultCode;
     }
 
-    public void setResultCode(ResultCode resultCode) {
-        this.resultCode = resultCode;
-    }
 }

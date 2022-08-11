@@ -1,5 +1,7 @@
 package com.zane.test_ums.service.impl;
 
+import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zane.test_ums.dto.*;
@@ -9,7 +11,6 @@ import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.util.DateTimeUtil;
 import com.zane.test_ums.util.JwtUtil;
 import com.zane.test_ums.util.UserUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -27,14 +28,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired
-    UserMapper userMapper;
+    private final UserMapper userMapper;
+    private final UserUtil userUtil;
+    private final TokenService tokenService;
 
     @Autowired
-    UserUtil userUtil;
-
-    @Autowired
-    TokenService tokenService;
+    public UserServiceImpl(UserMapper userMapper, UserUtil userUtil, TokenService tokenService) {
+        this.userMapper = userMapper;
+        this.userUtil = userUtil;
+        this.tokenService = tokenService;
+    }
 
     @Override
     public RegisterDto register(LoginDto register) {
@@ -48,8 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String encodePassword = BCrypt.hashpw(register.getPassword(), BCrypt.gensalt());
         user.setPassword(encodePassword);
 
-        user.setCreateTime(DateTimeUtil.getUtc());
-        user.setUpdateTime(DateTimeUtil.getUtc());
+        user.setCreateTime(LocalDateTime.now());
+        user.setUpdateTime(LocalDateTime.now());
 
         userMapper.insert(user);
 
@@ -73,6 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         tokenService.saveToken(user.getId(), token);
 
         UserDto myUser = new UserDto();
+
         myUser.setToken(token);
         myUser.setExpiresIn((int) JwtUtil.EXPIRE_TIME / 1000);
         myUser.setUserId(user.getId());
@@ -103,18 +107,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserInfoDto getUserInfoDto() {
         UserInfoDto userInfoDto = new UserInfoDto();
         User user = userMapper.selectById(userUtil.getUserId());
+
         userInfoDto.setUserId(user.getId());
         userInfoDto.setEmail(user.getEmail());
         userInfoDto.setNickname(user.getNickname());
         userInfoDto.setAddress(user.getAddress());
         userInfoDto.setCreateAt(user.getCreateTime());
         userInfoDto.setUpdateAt(user.getUpdateTime());
-        return userInfoDto;
-    }
 
-    @Override
-    public String getPassword(String email) {
-        return getUserByEmail(email).getPassword();
+        return userInfoDto;
     }
 
     @Override
@@ -122,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = getById(userUtil.getUserId());
         user.setNickname(userInfo.getNickname());
         user.setAddress(userInfo.getAddress());
-        user.setUpdateTime(DateTimeUtil.getUtc());
+        user.setUpdateTime(LocalDateTime.now());
         userMapper.updateById(user);
     }
 
@@ -135,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (BCrypt.checkpw(oldPassword, user.getPassword())) {
             newPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPassword(newPassword);
-            user.setUpdateTime(DateTimeUtil.getUtc());
+            user.setUpdateTime(LocalDateTime.now());
             userMapper.updateById(user);
         } else {
             throw new MyException(ResultCode.ERROR_PASSWORD, "老密码不正确！！！");

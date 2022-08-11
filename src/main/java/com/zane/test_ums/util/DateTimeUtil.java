@@ -17,14 +17,17 @@ public class DateTimeUtil {
         super();
     }
 
+    /**
+     * 时间转换
+     * @param time：转换的时间
+     * @param fromZone：来自的时区
+     * @param toZone：要转换为的时区
+     * @return LocalDateTime
+     */
     public static LocalDateTime toZone(final LocalDateTime time, final ZoneId fromZone, final ZoneId toZone) {
         final ZonedDateTime zonedtime = time.atZone(fromZone);
         final ZonedDateTime converted = zonedtime.withZoneSameInstant(toZone);
         return converted.toLocalDateTime();
-    }
-
-    public static LocalDateTime toZone(final LocalDateTime time, final ZoneId toZone) {
-        return DateTimeUtil.toZone(time, ZoneId.systemDefault(), toZone);
     }
 
     public static LocalDateTime toUtc(final LocalDateTime time, final ZoneId fromZone) {

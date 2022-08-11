@@ -1,9 +1,7 @@
 package com.zane.test_ums.controller;
 
 import com.zane.test_ums.dto.LoginDto;
-import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.result.Result;
-import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.util.CheckUtil;
@@ -36,14 +34,7 @@ public class AccountController {
      */
     @PostMapping("/register")
     public Result register(@RequestBody LoginDto register) {
-        // DONE: 邮箱合法性验证 + 密码合法性验证
-        if (!CheckUtil.checkEmail(register.getEmail())) {
-            throw new MyException(ResultCode.ILLEGAL_EMAIL, "邮箱不合法！！！");
-        }
-        if (!CheckUtil.checkPassword(register.getPassword())) {
-            throw new MyException(ResultCode.ILLEGAL_PASSWORD, "密码不合法！！！");
-        }
-
+        CheckUtil.checkLogin(register);
         return ResultFactory.buildProcessedResult(userService.register(register));
     }
 
@@ -54,14 +45,7 @@ public class AccountController {
      */
     @PostMapping("/login")
     public Result login(@RequestBody LoginDto login) {
-        // DONE: 邮箱合法性验证 + 密码合法性验证
-        if (!CheckUtil.checkEmail(login.getEmail())) {
-            throw new MyException(ResultCode.ILLEGAL_EMAIL, "邮箱不合法！！！");
-        }
-        if (!CheckUtil.checkPassword(login.getPassword())) {
-            throw new MyException(ResultCode.ILLEGAL_PASSWORD, "密码不合法！！！");
-        }
-
+        CheckUtil.checkLogin(login);
         return ResultFactory.buildProcessedResult(userService.login(login));
     }
 

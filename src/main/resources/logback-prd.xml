@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <!--设置模块名，用于日志文件名 和项目文件夹名字一致-->
-    <property name="moduleName" value="zane-ums."/>
+    <property name="moduleName" value="zane-ums"/>
     <!-- 输出格式 -->
     <property name="outPattern"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %class:%-4line %-5level - %m%n"/>

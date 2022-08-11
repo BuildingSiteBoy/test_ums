@@ -7,22 +7,25 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author Zanezeng
  * 解决跨域问题：所有请求都允许跨域，使用这种配置方法就不能在 filter中再配置header
+ * interceptor: 拦截器实例
+ * path: 设置拦截器的过滤路径规则
+ * excludePath: 设置不需要拦截的过滤规则
+ * @author Zanezeng
  */
 @Configuration
 public class WebApiConfig implements WebMvcConfigurer {
 
+    private final Interceptor interceptor;
+
     @Autowired
-    Interceptor interceptor;
+    public WebApiConfig(Interceptor interceptor) {
+        this.interceptor = interceptor;
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        /**
-         * interceptor: 拦截器实例
-         * path: 设置拦截器的过滤路径规则
-         * excludePath: 设置不需要拦截的过滤规则
-         */
+
         String path = "/**";
         String[] excludePath = {"/api/v1/user/register", "/api/v1/user/login"};
 
@@ -33,7 +36,7 @@ public class WebApiConfig implements WebMvcConfigurer {
 
     /**
      * 跨域请求处理
-     * @param registry
+     * @param registry registry
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
