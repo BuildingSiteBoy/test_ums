@@ -15,6 +15,7 @@ import com.zane.test_ums.utils.JwtUtil;
 import com.zane.test_ums.utils.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,14 +77,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         UserDto myUser = new UserDto();
 
+        // 参数拷贝
+        BeanUtils.copyProperties(user, myUser);
+
         myUser.setToken(token);
         myUser.setExpiresIn((int) JwtUtil.EXPIRE_TIME / 1000);
-        myUser.setUserId(user.getId());
-        myUser.setEmail(user.getEmail());
-        myUser.setNickname(user.getNickname());
-        myUser.setAddress(user.getAddress());
-        myUser.setCreateAt(user.getCreateTime());
-        myUser.setUpdateAt(user.getUpdateTime());
 
         return myUser;
     }
@@ -107,12 +105,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserInfoDto userInfoDto = new UserInfoDto();
         User user = userMapper.selectById(userUtil.getUserId());
 
-        userInfoDto.setUserId(user.getId());
-        userInfoDto.setEmail(user.getEmail());
-        userInfoDto.setNickname(user.getNickname());
-        userInfoDto.setAddress(user.getAddress());
-        userInfoDto.setCreateAt(user.getCreateTime());
-        userInfoDto.setUpdateAt(user.getUpdateTime());
+        // 参数拷贝
+        BeanUtils.copyProperties(user, userInfoDto);
 
         return userInfoDto;
     }
@@ -120,8 +114,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void editUser(AlterDto userInfo) {
         User user = getById(userUtil.getUserId());
-        user.setNickname(userInfo.getNickname());
-        user.setAddress(userInfo.getAddress());
+
+        // 参数拷贝
+        BeanUtils.copyProperties(userInfo, user);
+
         user.setUpdateTime(LocalDateTime.now());
         userMapper.updateById(user);
     }
