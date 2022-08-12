@@ -11,7 +11,7 @@ import com.zane.test_ums.result.Result;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.util.CheckUtil;
+import com.zane.test_ums.utils.CheckUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

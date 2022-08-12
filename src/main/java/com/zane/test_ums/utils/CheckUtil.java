@@ -1,6 +1,6 @@
-package com.zane.test_ums.util;
+package com.zane.test_ums.utils;
 
-import com.zane.test_ums.dto.LoginDto;
+import com.zane.test_ums.dto.AccountDto;
 import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.result.ResultCode;
 import org.springframework.stereotype.Component;
@@ -46,7 +46,7 @@ public class CheckUtil {
      * 验证登录时邮箱和密码的合法性
      * @param login 需验证的信息
      */
-    public static void checkLogin(LoginDto login) {
+    public static void checkLogin(AccountDto login) {
         // DONE: 邮箱合法性验证 + 密码合法性验证
         if (CheckUtil.checkEmail(login.getEmail())) {
             throw new MyException(ResultCode.ILLEGAL_EMAIL, "邮箱不合法！！！");

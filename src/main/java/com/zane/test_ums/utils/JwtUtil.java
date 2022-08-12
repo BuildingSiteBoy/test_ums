@@ -1,4 +1,4 @@
-package com.zane.test_ums.util;
+package com.zane.test_ums.utils;
 
 import java.util.Date;
 

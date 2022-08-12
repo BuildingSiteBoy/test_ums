@@ -7,7 +7,7 @@ import com.zane.test_ums.entity.User;
 import com.zane.test_ums.exception.MyException;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
-import com.zane.test_ums.util.UserUtil;
+import com.zane.test_ums.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

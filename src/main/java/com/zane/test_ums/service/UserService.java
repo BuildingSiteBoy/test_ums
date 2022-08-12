@@ -15,17 +15,17 @@ import com.zane.test_ums.entity.User;
 public interface UserService extends IService<User> {
     /**
      * 注册用户
-     * @param register：注册用户
+     * @param account：注册用户
      * @return userId + time
      */
-     RegisterDto register(LoginDto register);
+     RegisterDto register(AccountDto account);
 
     /**
      * 用户登录
-     * @param login：登录用户
+     * @param account：登录用户
      * @return userDto
      */
-    UserDto login(LoginDto login);
+    UserDto login(AccountDto account);
 
     /**
      * 用户登出

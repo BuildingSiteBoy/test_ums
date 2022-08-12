@@ -8,7 +8,7 @@ import lombok.Data;
  * @author Zanezeng
  */
 @Data
-public class LoginDto implements Serializable {
+public class AccountDto implements Serializable {
 
     private String email;
 

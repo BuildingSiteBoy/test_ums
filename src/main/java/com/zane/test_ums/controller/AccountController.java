@@ -1,10 +1,10 @@
 package com.zane.test_ums.controller;
 
-import com.zane.test_ums.dto.LoginDto;
+import com.zane.test_ums.dto.AccountDto;
 import com.zane.test_ums.result.Result;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.util.CheckUtil;
+import com.zane.test_ums.utils.CheckUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,24 +29,24 @@ public class AccountController {
 
     /**
      * 用户注册接口
-     * @param register 注册信息(email, password)
+     * @param account 注册信息(email, password)
      * @return 处理结果
      */
     @PostMapping("/register")
-    public Result register(@RequestBody LoginDto register) {
-        CheckUtil.checkLogin(register);
-        return ResultFactory.buildProcessedResult(userService.register(register));
+    public Result register(@RequestBody AccountDto account) {
+        CheckUtil.checkLogin(account);
+        return ResultFactory.buildProcessedResult(userService.register(account));
     }
 
     /**
      * 用户登录接口
-     * @param login 登录信息(email, password)
+     * @param account 登录信息(email, password)
      * @return 处理结果
      */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginDto login) {
-        CheckUtil.checkLogin(login);
-        return ResultFactory.buildProcessedResult(userService.login(login));
+    public Result login(@RequestBody AccountDto account) {
+        CheckUtil.checkLogin(account);
+        return ResultFactory.buildProcessedResult(userService.login(account));
     }
 
     /**

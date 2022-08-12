@@ -11,8 +11,9 @@ import com.zane.test_ums.mapper.UserMapper;
 import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.util.JwtUtil;
-import com.zane.test_ums.util.UserUtil;
+import com.zane.test_ums.utils.JwtUtil;
+import com.zane.test_ums.utils.UserUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
  * @since 2022-08-01
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
@@ -40,35 +42,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public RegisterDto register(LoginDto register) {
-        if (getUserByEmail(register.getEmail()) != null) {
+    public RegisterDto register(AccountDto account) {
+        if (getUserByEmail(account.getEmail()) != null) {
             throw new MyException(ResultCode.EXISTS_EMAIL, "邮箱已存在！！！");
         }
 
         User user = new User();
-        user.setEmail(register.getEmail());
-
-        String encodePassword = BCrypt.hashpw(register.getPassword(), BCrypt.gensalt());
-        user.setPassword(encodePassword);
-
+        user.setEmail(account.getEmail());
+        user.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt()));
         user.setCreateTime(LocalDateTime.now());
         user.setUpdateTime(LocalDateTime.now());
 
         userMapper.insert(user);
 
-        user = getUserByEmail(register.getEmail());
+        user = getUserByEmail(account.getEmail());
 
         return new RegisterDto(user.getId(), user.getCreateTime());
     }
 
     @Override
-    public UserDto login(LoginDto login) {
-        User user = getUserByEmail(login.getEmail());
+    public UserDto login(AccountDto account) {
+        User user = getUserByEmail(account.getEmail());
         if (user == null) {
             throw new MyException(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在！！！");
         }
 
-        if (!BCrypt.checkpw(login.getPassword(), user.getPassword())) {
+        if (!BCrypt.checkpw(account.getPassword(), user.getPassword())) {
             throw new MyException(ResultCode.ERROR_PASSWORD, "密码不正确！！！");
         }
 

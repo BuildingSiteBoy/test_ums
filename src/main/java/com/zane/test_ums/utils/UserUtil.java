@@ -1,4 +1,4 @@
-package com.zane.test_ums.util;
+package com.zane.test_ums.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,5 +58,9 @@ public class UserUtil {
      */
     public Long getUserId() {
         return getUser().getId();
+    }
+
+    public HttpServletRequest getRequest() {
+        return request;
     }
 }

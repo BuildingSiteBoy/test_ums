@@ -1,4 +1,4 @@
-package com.zane.test_ums.util;
+package com.zane.test_ums.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,8 +25,8 @@ public class DateTimeUtil {
      * @return LocalDateTime
      */
     public static LocalDateTime toZone(final LocalDateTime time, final ZoneId fromZone, final ZoneId toZone) {
-        final ZonedDateTime zonedtime = time.atZone(fromZone);
-        final ZonedDateTime converted = zonedtime.withZoneSameInstant(toZone);
+        final ZonedDateTime zonedTime = time.atZone(fromZone);
+        final ZonedDateTime converted = zonedTime.withZoneSameInstant(toZone);
         return converted.toLocalDateTime();
     }
 

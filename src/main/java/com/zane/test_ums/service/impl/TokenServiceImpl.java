@@ -2,8 +2,8 @@ package com.zane.test_ums.service.impl;
 
 import com.zane.test_ums.entity.User;
 import com.zane.test_ums.service.TokenService;
-import com.zane.test_ums.util.JwtUtil;
-import com.zane.test_ums.util.RedisUtil;
+import com.zane.test_ums.utils.JwtUtil;
+import com.zane.test_ums.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
