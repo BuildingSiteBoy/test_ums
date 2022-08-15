@@ -55,7 +55,7 @@ public class UserController {
         }
 
         userService.editUser(alterDto);
-        return ResultFactory.buildProcessedResult(null);
+        return ResultFactory.buildSuccessResult(null);
     }
 
     @PostMapping("/updatePassword")
@@ -73,7 +73,7 @@ public class UserController {
 
         userService.resetPassword(passwordDto);
         userService.logout();
-        return ResultFactory.buildProcessedResult(null);
+        return ResultFactory.buildSuccessResult(null);
     }
 
     @PostMapping("/hello")

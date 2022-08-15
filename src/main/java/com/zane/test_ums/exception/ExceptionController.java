@@ -3,8 +3,11 @@ package com.zane.test_ums.exception;
 import javax.servlet.http.HttpServletRequest;
 
 import com.zane.test_ums.result.Result;
+import com.zane.test_ums.result.ResultCode;
 import com.zane.test_ums.result.ResultFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,18 +16,33 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 异常处理类
  * @author Zanezeng
  */
+@Slf4j
 @RestControllerAdvice
 public class ExceptionController {
 
     /**
-     * 捕捉其他多有自定义的异常
+     * 捕捉自定义的异常
      * @param e 自定义异常
      * @return result
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MyException.class)
     public Result handle(MyException e) {
-        return ResultFactory.buildResult(e.getResultCode(), e.getMessage(), null);
+        int errorCode = e.getResultCode().getCode();
+        String msg = e.getResultCode().getMsg() + ": " + e.getMessage();
+        log.info("errorCode: {}, message: {}", errorCode, msg);
+        return ResultFactory.buildResult(errorCode, msg, null);
+    }
+
+    public Result handleFormatError(MethodArgumentNotValidException e) {
+        String exceptionMsg = e.getBindingResult().getFieldError().getDefaultMessage();
+        if (exceptionMsg != null) {
+            int errorCode = Integer.parseInt(exceptionMsg);
+            String msg = ResultCode.getMsgByCode(errorCode);
+            log.info("errorCode: {}, message: {}", errorCode, msg);
+            return ResultFactory.buildResult(errorCode, msg, null);
+        }
+        return ResultFactory.buildResult(500, "服务器产生内部错误", null);
     }
 
     /**

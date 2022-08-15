@@ -22,7 +22,7 @@ public class CheckUtil {
     /**
      * REGX_PASSWORD: 验证密码的正则表达式
      */
-    private static final String REGX_PASSWORD = "^[a-zA-Z0-9!#$%&'*+,-.\\\\/:;<=>?@^_`~|\"\\(\\)\\[\\]\\{\\}]{6,20}$";
+    private static final String REGX_PASSWORD = "^[\\x21-\\x7e]{6,20}$";
 
     /**
      * 验证邮箱是否合法

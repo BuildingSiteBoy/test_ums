@@ -35,7 +35,7 @@ public class AccountController {
     @PostMapping("/register")
     public Result register(@RequestBody AccountDto account) {
         CheckUtil.checkLogin(account);
-        return ResultFactory.buildProcessedResult(userService.register(account));
+        return ResultFactory.buildSuccessResult(userService.register(account));
     }
 
     /**
@@ -46,7 +46,7 @@ public class AccountController {
     @PostMapping("/login")
     public Result login(@RequestBody AccountDto account) {
         CheckUtil.checkLogin(account);
-        return ResultFactory.buildProcessedResult(userService.login(account));
+        return ResultFactory.buildSuccessResult(userService.login(account));
     }
 
     /**
@@ -56,6 +56,6 @@ public class AccountController {
     @PostMapping("/logout")
     public Result logout() {
         userService.logout();
-        return ResultFactory.buildProcessedResult(null);
+        return ResultFactory.buildSuccessResult(null);
     }
 }
