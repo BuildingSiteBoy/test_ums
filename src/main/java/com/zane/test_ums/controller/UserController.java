@@ -3,8 +3,8 @@ package com.zane.test_ums.controller;
 
 import com.zane.test_ums.dto.AlterDto;
 import com.zane.test_ums.dto.PasswordDto;
-import com.zane.test_ums.result.Result;
-import com.zane.test_ums.result.ResultFactory;
+import com.zane.test_ums.common.result.Result;
+import com.zane.test_ums.common.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

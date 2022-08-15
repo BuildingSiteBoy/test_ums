@@ -1,4 +1,4 @@
-package com.zane.test_ums.result;
+package com.zane.test_ums.common.result;
 
 /**
  * @author Zanezeng

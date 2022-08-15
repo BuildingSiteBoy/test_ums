@@ -1,6 +1,6 @@
-package com.zane.test_ums.exception;
+package com.zane.test_ums.common.exception;
 
-import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.common.result.ResultCode;
 
 /**
  * 自定义异常类

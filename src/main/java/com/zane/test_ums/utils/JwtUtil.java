@@ -7,8 +7,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.zane.test_ums.exception.MyException;
-import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.common.exception.MyException;
+import com.zane.test_ums.common.result.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

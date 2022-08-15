@@ -1,10 +1,11 @@
-package com.zane.test_ums.exception;
+package com.zane.test_ums.common.exception;
 
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
-import com.zane.test_ums.result.Result;
-import com.zane.test_ums.result.ResultCode;
-import com.zane.test_ums.result.ResultFactory;
+import com.zane.test_ums.common.result.Result;
+import com.zane.test_ums.common.result.ResultCode;
+import com.zane.test_ums.common.result.ResultFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,7 +38,7 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleFormatError(MethodArgumentNotValidException e) {
-        String exceptionMsg = e.getBindingResult().getFieldError().getDefaultMessage();
+        String exceptionMsg = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
         if (exceptionMsg != null) {
             int errorCode = Integer.parseInt(exceptionMsg);
             String msg = ResultCode.getMsgByCode(errorCode);

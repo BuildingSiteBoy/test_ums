@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zane.test_ums.entity.User;
-import com.zane.test_ums.exception.MyException;
-import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.common.exception.MyException;
+import com.zane.test_ums.common.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;

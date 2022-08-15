@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zane.test_ums.entity.User;
-import com.zane.test_ums.exception.MyException;
+import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.mapper.UserMapper;
-import com.zane.test_ums.result.ResultCode;
+import com.zane.test_ums.common.result.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
