@@ -6,6 +6,7 @@ import com.zane.test_ums.dto.PasswordDto;
 import com.zane.test_ums.common.result.Result;
 import com.zane.test_ums.common.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }

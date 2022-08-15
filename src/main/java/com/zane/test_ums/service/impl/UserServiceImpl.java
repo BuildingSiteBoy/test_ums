@@ -1,18 +1,18 @@
 package com.zane.test_ums.service.impl;
 
 import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zane.test_ums.common.exception.MyException;
+import com.zane.test_ums.common.result.ResultCode;
 import com.zane.test_ums.dto.*;
 import com.zane.test_ums.entity.User;
-import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.mapper.UserMapper;
-import com.zane.test_ums.common.result.ResultCode;
 import com.zane.test_ums.service.TokenService;
 import com.zane.test_ums.service.UserService;
 import com.zane.test_ums.utils.JwtUtil;
-import com.zane.test_ums.utils.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
@@ -32,14 +32,14 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
-    private final UserUtil userUtil;
     private final TokenService tokenService;
+    private final HttpServletRequest request;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, UserUtil userUtil, TokenService tokenService) {
+    public UserServiceImpl(UserMapper userMapper, TokenService tokenService, HttpServletRequest request) {
         this.userMapper = userMapper;
-        this.userUtil = userUtil;
         this.tokenService = tokenService;
+        this.request = request;
     }
 
     @Override
@@ -65,14 +65,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserDto login(AccountDto account) {
         User user = getUserByEmail(account.getEmail());
         if (user == null) {
-            throw new MyException(ResultCode.NON_EXISTS_EMAIL, "邮箱不存在！！！");
+            throw new MyException(ResultCode.NON_EXISTS_EMAIL, "！！！");
         }
 
         if (!BCrypt.checkpw(account.getPassword(), user.getPassword())) {
-            throw new MyException(ResultCode.ERROR_PASSWORD, "密码不正确！！！");
+            throw new MyException(ResultCode.ERROR_PASSWORD, "！！！");
         }
 
-        String token = JwtUtil.encode(user.getEmail(), user.getPassword());
+        String token = JwtUtil.encode(user.getId());
         tokenService.saveToken(user.getId(), token);
 
         UserDto myUser = new UserDto();
@@ -87,9 +87,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getUserByToken() {
+        String token = request.getHeader("Authorization");
+        Long id =  JwtUtil.decode(token);
+        return getById(id);
+    }
+
+    @Override
     public void logout() {
         // DONE: 清空用户凭证
-        Long userId = userUtil.getUserId();
+        Long userId = getUserByToken().getId();
         tokenService.clearToken(userId);
     }
 
@@ -103,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserInfoDto getUserInfoDto() {
         UserInfoDto userInfoDto = new UserInfoDto();
-        User user = userMapper.selectById(userUtil.getUserId());
+        User user = getUserByToken();
 
         // 参数拷贝
         BeanUtils.copyProperties(user, userInfoDto);
@@ -113,7 +120,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void editUser(AlterDto userInfo) {
-        User user = getById(userUtil.getUserId());
+        User user = getUserByToken();
 
         // 参数拷贝
         BeanUtils.copyProperties(userInfo, user);
@@ -127,14 +134,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String oldPassword = passwordDto.getOldPassword();
         String newPassword = passwordDto.getNewPassword();
 
-        User user = getById(userUtil.getUserId());
+        User user = getUserByToken();
         if (BCrypt.checkpw(oldPassword, user.getPassword())) {
             newPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPassword(newPassword);
             user.setUpdateTime(LocalDateTime.now());
             userMapper.updateById(user);
         } else {
-            throw new MyException(ResultCode.ERROR_PASSWORD, "老密码不正确！！！");
+            throw new MyException(ResultCode.ERROR_PASSWORD, "请重试！！！");
         }
     }
 }

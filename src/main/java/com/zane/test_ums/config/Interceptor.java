@@ -3,11 +3,12 @@ package com.zane.test_ums.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zane.test_ums.entity.User;
 import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.common.result.ResultCode;
+import com.zane.test_ums.entity.User;
 import com.zane.test_ums.service.TokenService;
-import com.zane.test_ums.utils.UserUtil;
+import com.zane.test_ums.service.UserService;
+import com.zane.test_ums.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,27 +19,29 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Component
 public class Interceptor implements HandlerInterceptor {
-
-    private final UserUtil userUtil;
-
+    private final UserService userService;
     private final TokenService tokenService;
-
     @Autowired
-    public Interceptor(UserUtil userUtil, TokenService tokenService) {
-        this.userUtil = userUtil;
+    public Interceptor(UserService userService, TokenService tokenService) {
+        this.userService = userService;
         this.tokenService = tokenService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = request.getHeader("Authorization");
-        User user = userUtil.getUser();
+        User user = userService.getUserByToken();
+
+        // Done: 验证token是否有效
+        if (!JwtUtil.verify(token, user.getId())) {
+            return false;
+        }
 
         // DONE: 验证token是否正确
         if (tokenService.isRight(user, token)) {
             return true;
         } else {
-            throw new MyException(ResultCode.INVALID_TOKEN, "用户凭证已失效（过期、登出）");
+            throw new MyException(ResultCode.INVALID_TOKEN, "！！！");
         }
     }
 

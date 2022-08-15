@@ -5,11 +5,11 @@ import java.util.Date;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.common.result.ResultCode;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,7 +27,9 @@ public class JwtUtil {
      * 过期时间5分钟
      */
     public static final long EXPIRE_TIME = 30 * 60 * 1000L;
-    public static final String CLAIM = "email";
+    public static final String CLAIM = "id";
+
+    public static final String SECRET = BCrypt.hashpw("U0JBUElKV1RkV2FuZzKyNjQ1NA==", BCrypt.gensalt());
 
     private JwtUtil() {
     }
@@ -35,39 +37,37 @@ public class JwtUtil {
     /**
      * 校验token是否正确
      * @param token 密钥
-     * @param email 邮箱
-     * @param password 用户的密码
+     * @param userId 用户id
      * @return 是否正确
      */
-    public static boolean verify(String token,String email, String password) {
+    public static boolean verify(String token, Long userId) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(password);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withClaim(CLAIM, email)
+                    .withClaim(CLAIM, userId)
                     .build();
             verifier.verify(token);
             return true;
         } catch (RuntimeException e) {
             log.error("JWTToken认证解密出现UnsupportedEncodingException异常:{}", e.getMessage());
-            throw new MyException(ResultCode.ERROR_TOKEN,
-                    "用户凭证错: JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
+            throw new MyException(ResultCode.INVALID_TOKEN,
+                    "用户凭证已失效（过期、登出）:" + e.getMessage());
         }
     }
 
     /**
      * 加密过程，生成token签名,5min后过期
-     * @param email 邮箱
-     * @param password 用户的密码
+     * @param userId 用户id
      * @return 加密的token
      */
-    public static String encode(String email, String password) {
+    public static String encode(Long userId) {
         try {
             // 自定义过期时间：System.currentTimeMillis() + ttlMillis
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
-            Algorithm algorithm = Algorithm.HMAC256(password);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
             // 附带email信息
             return JWT.create()
-                    .withClaim(CLAIM, email)
+                    .withClaim(CLAIM, userId)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
@@ -78,17 +78,18 @@ public class JwtUtil {
     }
 
     /**
-     * 解密过程：获得token中的信息无需password解密也能获得
-     * @return token中包含的邮箱
+     * 解密过程：获得token中的信息: userId
+     * @return token中包含的userId
      */
-    public static String decode(String token) {
+    public static Long decode(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim(CLAIM).asString();
-        } catch (JWTDecodeException e) {
+            return jwt.getClaim(CLAIM).asLong();
+        } catch (Exception e) {
             log.error("解密Token中的公共信息出现JWTDecodeException异常:{}", e.getMessage());
             throw new MyException(ResultCode.ERROR_TOKEN,
-                    "用户凭证错误：解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
+                    "用户凭证错误:" + e.getMessage());
         }
     }
+
 }

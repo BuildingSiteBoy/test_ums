@@ -13,6 +13,8 @@ import com.zane.test_ums.entity.User;
  * @since 2022-08-01
  */
 public interface UserService extends IService<User> {
+
+
     /**
      * 注册用户
      * @param account：注册用户
@@ -26,6 +28,12 @@ public interface UserService extends IService<User> {
      * @return userDto
      */
     UserDto login(AccountDto account);
+
+    /**
+     * 通过token获取用户信息
+     * @return user
+     */
+    User getUserByToken();
 
     /**
      * 用户登出

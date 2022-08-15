@@ -55,7 +55,7 @@ public enum ResultCode {
      * -20202: 用户凭证已失效（过期、登出）
      */
     INVALID_TOKEN(-20201, "用户凭证已失效（过期、登出）"),
-    ERROR_TOKEN(-20202, "用户凭证已失效（过期、登出）");
+    ERROR_TOKEN(-20202, "用户凭证错误");
 
     private int code;
     private String msg;
