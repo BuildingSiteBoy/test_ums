@@ -34,6 +34,8 @@ public class ExceptionController {
         return ResultFactory.buildResult(errorCode, msg, null);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleFormatError(MethodArgumentNotValidException e) {
         String exceptionMsg = e.getBindingResult().getFieldError().getDefaultMessage();
         if (exceptionMsg != null) {

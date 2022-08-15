@@ -4,7 +4,7 @@ import com.zane.test_ums.dto.AccountDto;
 import com.zane.test_ums.result.Result;
 import com.zane.test_ums.result.ResultFactory;
 import com.zane.test_ums.service.UserService;
-import com.zane.test_ums.utils.CheckUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +33,7 @@ public class AccountController {
      * @return 处理结果
      */
     @PostMapping("/register")
-    public Result register(@RequestBody AccountDto account) {
-        CheckUtil.checkLogin(account);
+    public Result register(@RequestBody @Validated AccountDto account) {
         return ResultFactory.buildSuccessResult(userService.register(account));
     }
 
@@ -44,8 +43,7 @@ public class AccountController {
      * @return 处理结果
      */
     @PostMapping("/login")
-    public Result login(@RequestBody AccountDto account) {
-        CheckUtil.checkLogin(account);
+    public Result login(@RequestBody @Validated AccountDto account) {
         return ResultFactory.buildSuccessResult(userService.login(account));
     }
 
