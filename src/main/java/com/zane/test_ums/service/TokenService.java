@@ -1,7 +1,5 @@
 package com.zane.test_ums.service;
 
-import com.zane.test_ums.entity.User;
-
 /**
  * @author Zanezeng
  */
@@ -15,11 +13,11 @@ public interface TokenService {
 
     /**
      * 判断Token是否正确
-     * @param user: 用户
+     * @param userId: 用户ID
      * @param token: token
      * @return token
      */
-    boolean isRight(User user, String token);
+    boolean isRight(Long userId, String token);
 
     /**
      * 清空Token

@@ -2,15 +2,17 @@ package com.zane.test_ums.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.springframework.stereotype.Component;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 
 /**
  * @author Zanezeng
  */
 @Slf4j
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class PrintLogAspect {
 
     /**

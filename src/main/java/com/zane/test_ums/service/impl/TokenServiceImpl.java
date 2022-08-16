@@ -33,8 +33,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean isRight(User user, String token) {
-        String key = PREFIX_REDIS_USER + user.getId().toString();
+    public boolean isRight(Long userId, String token) {
+        String key = PREFIX_REDIS_USER + userId.toString();
 
         long len = redisUtil.lGetListSize(key);
         for (int i = 0; i < len; i++) {

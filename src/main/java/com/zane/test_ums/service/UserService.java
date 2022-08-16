@@ -30,12 +30,6 @@ public interface UserService extends IService<User> {
     UserDto login(AccountDto account);
 
     /**
-     * 通过token获取用户信息
-     * @return user
-     */
-    User getUserByToken();
-
-    /**
      * 用户登出
      */
     void logout();

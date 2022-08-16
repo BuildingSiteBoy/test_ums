@@ -9,7 +9,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.common.result.ResultCode;
 import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,7 +28,7 @@ public class JwtUtil {
     public static final long EXPIRE_TIME = 30 * 60 * 1000L;
     public static final String CLAIM = "id";
 
-    public static final String SECRET = BCrypt.hashpw("U0JBUElKV1RkV2FuZzKyNjQ1NA==", BCrypt.gensalt());
+    public static final String SECRET = "$2a$10$xF7GlcDxTYNbjaYEAvpVweVspvtBP3Wfr.N9KnHXCiKqrTO.QSthO";
 
     private JwtUtil() {
     }
@@ -49,7 +48,7 @@ public class JwtUtil {
             verifier.verify(token);
             return true;
         } catch (RuntimeException e) {
-            log.error("JWTToken认证解密出现UnsupportedEncodingException异常:{}", e.getMessage());
+            log.warn("JWTToken认证解密出现UnsupportedEncodingException异常:{}", e.getMessage());
             throw new MyException(ResultCode.INVALID_TOKEN,
                     "用户凭证已失效（过期、登出）:" + e.getMessage());
         }
@@ -71,7 +70,7 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
-            log.error("错误信息JWTToken加密出现UnsupportedEncodingException异常:{}", e.getMessage());
+            log.warn("错误信息JWTToken加密出现UnsupportedEncodingException异常:{}", e.getMessage());
             throw new MyException(ResultCode.SERVER_ERROR,
                     "错误信息JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
@@ -86,7 +85,7 @@ public class JwtUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim(CLAIM).asLong();
         } catch (Exception e) {
-            log.error("解密Token中的公共信息出现JWTDecodeException异常:{}", e.getMessage());
+            log.warn("解密Token中的公共信息出现JWTDecodeException异常:{}", e.getMessage());
             throw new MyException(ResultCode.ERROR_TOKEN,
                     "用户凭证错误:" + e.getMessage());
         }

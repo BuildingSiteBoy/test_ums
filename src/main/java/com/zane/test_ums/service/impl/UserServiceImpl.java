@@ -1,11 +1,10 @@
 package com.zane.test_ums.service.impl;
 
 import java.time.LocalDateTime;
-import javax.servlet.http.HttpServletRequest;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zane.test_ums.common.UserThreadLocal;
+import com.zane.test_ums.common.UserIdThreadLocal;
 import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.common.result.ResultCode;
 import com.zane.test_ums.dto.*;
@@ -34,13 +33,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final UserMapper userMapper;
     private final TokenService tokenService;
-    private final HttpServletRequest request;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, TokenService tokenService, HttpServletRequest request) {
+    public UserServiceImpl(UserMapper userMapper, TokenService tokenService) {
         this.userMapper = userMapper;
         this.tokenService = tokenService;
-        this.request = request;
     }
 
     @Override
@@ -88,19 +85,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User getUserByToken() {
-        String token = request.getHeader("Authorization");
-        Long id =  JwtUtil.decode(token);
-        return getById(id);
-    }
-
-    @Override
     public void logout() {
         // DONE: 清空用户凭证
-        Long userId = UserThreadLocal.get().getId();
+        Long userId = UserIdThreadLocal.get();
+        log.info("User {}: clear Token!", userId);
         tokenService.clearToken(userId);
-        log.info("User {}: clear Token and remove UserThreadLocal!", userId);
-        UserThreadLocal.remove();
     }
 
     @Override
@@ -113,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserInfoDto getUserInfoDto() {
         UserInfoDto userInfoDto = new UserInfoDto();
-        User user = UserThreadLocal.get();
+        User user = getById(UserIdThreadLocal.get());
 
         // 参数拷贝
         BeanUtils.copyProperties(user, userInfoDto);
@@ -123,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void editUser(AlterDto userInfo) {
-        User user = UserThreadLocal.get();
+        User user = getById(UserIdThreadLocal.get());
 
         // 参数拷贝
         BeanUtils.copyProperties(userInfo, user);
@@ -137,7 +126,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String oldPassword = passwordDto.getOldPassword();
         String newPassword = passwordDto.getNewPassword();
 
-        User user = UserThreadLocal.get();
+        User user = getById(UserIdThreadLocal.get());
         if (BCrypt.checkpw(oldPassword, user.getPassword())) {
             newPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPassword(newPassword);

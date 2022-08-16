@@ -1,5 +1,7 @@
 package com.zane.test_ums.config;
 
+import com.zane.test_ums.web.AuthorInterceptor;
+import com.zane.test_ums.web.LogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -16,11 +18,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebApiConfig implements WebMvcConfigurer {
 
-    private final Interceptor interceptor;
+    private final AuthorInterceptor authorInterceptor;
+    private final LogInterceptor logInterceptor;
 
     @Autowired
-    public WebApiConfig(Interceptor interceptor) {
-        this.interceptor = interceptor;
+    public WebApiConfig(AuthorInterceptor authorInterceptor, LogInterceptor logInterceptor) {
+        this.authorInterceptor = authorInterceptor;
+        this.logInterceptor = logInterceptor;
     }
 
     @Override
@@ -29,9 +33,14 @@ public class WebApiConfig implements WebMvcConfigurer {
         String path = "/**";
         String[] excludePath = {"/api/v1/user/register", "/api/v1/user/login"};
 
-        registry.addInterceptor(interceptor)
+        // token验证拦截器实例
+        registry.addInterceptor(authorInterceptor)
                 .addPathPatterns(path)
                 .excludePathPatterns(excludePath);
+
+        // 日志输出拦截器实例
+        registry.addInterceptor(logInterceptor)
+                .addPathPatterns(path);
     }
 
     /**
