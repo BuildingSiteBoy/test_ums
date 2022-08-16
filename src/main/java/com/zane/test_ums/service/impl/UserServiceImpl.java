@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zane.test_ums.common.UserThreadLocal;
 import com.zane.test_ums.common.exception.MyException;
 import com.zane.test_ums.common.result.ResultCode;
 import com.zane.test_ums.dto.*;
@@ -96,8 +97,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void logout() {
         // DONE: 清空用户凭证
-        Long userId = getUserByToken().getId();
+        Long userId = UserThreadLocal.get().getId();
         tokenService.clearToken(userId);
+        log.info("User {}: clear Token and remove UserThreadLocal!", userId);
+        UserThreadLocal.remove();
     }
 
     @Override
@@ -110,7 +113,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserInfoDto getUserInfoDto() {
         UserInfoDto userInfoDto = new UserInfoDto();
-        User user = getUserByToken();
+        User user = UserThreadLocal.get();
 
         // 参数拷贝
         BeanUtils.copyProperties(user, userInfoDto);
@@ -120,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void editUser(AlterDto userInfo) {
-        User user = getUserByToken();
+        User user = UserThreadLocal.get();
 
         // 参数拷贝
         BeanUtils.copyProperties(userInfo, user);
@@ -134,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String oldPassword = passwordDto.getOldPassword();
         String newPassword = passwordDto.getNewPassword();
 
-        User user = getUserByToken();
+        User user = UserThreadLocal.get();
         if (BCrypt.checkpw(oldPassword, user.getPassword())) {
             newPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPassword(newPassword);
