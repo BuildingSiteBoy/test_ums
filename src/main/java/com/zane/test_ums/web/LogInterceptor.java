@@ -3,8 +3,10 @@ package com.zane.test_ums.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,7 +18,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class LogInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            log.info("Access method:{}.{}; parameter:{}",
+                    handlerMethod.getBean().getClass().getSimpleName(),
+                    handlerMethod.getMethod().getName(),
+                    JSON.toJSONString(request.getParameterMap()));
+        }
+
+        return true;
     }
 
     @Override
@@ -26,6 +36,6 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        log.info("url:{}, return:{}", request.getRequestURI(), JSON.toJSONString(response.getOutputStream()));
     }
 }

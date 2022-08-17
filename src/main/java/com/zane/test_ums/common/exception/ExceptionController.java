@@ -31,7 +31,7 @@ public class ExceptionController {
     public Result handle(MyException e) {
         int errorCode = e.getResultCode().getCode();
         String msg = e.getResultCode().getMsg() + ": " + e.getMessage();
-        log.info("errorCode: {}, message: {}", errorCode, msg);
+        log.warn("errorCode: {}, message: {}", errorCode, msg);
         return ResultFactory.buildResult(errorCode, msg, null);
     }
 
@@ -42,7 +42,7 @@ public class ExceptionController {
         if (exceptionMsg != null) {
             int errorCode = Integer.parseInt(exceptionMsg);
             String msg = ResultCode.getMsgByCode(errorCode);
-            log.info("errorCode: {}, message: {}", errorCode, msg);
+            log.warn("errorCode: {}, message: {}", errorCode, msg);
             return ResultFactory.buildResult(errorCode, msg, null);
         }
         return ResultFactory.buildResult(500, "服务器产生内部错误", null);
